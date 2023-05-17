@@ -1,10 +1,11 @@
-mod utils;
-mod wfc;
-pub use wfc::*;
 mod grid;
 pub use grid::*;
-mod methods;
-pub use methods::*;
+mod utility;
+pub use utility::*;
+mod consistency;
+pub use consistency::*;
+mod tiles;
+pub use tiles::*;
 
 pub fn add(left: usize, right: usize) -> usize {
   left + right

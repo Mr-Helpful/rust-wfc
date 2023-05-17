@@ -1,31 +1,56 @@
-use std::ops::{Index, IndexMut};
+/// A generic ND cartesian grid, requiring
+use super::Grid;
 
-use crate::Grid;
+pub struct Cartesian<const N: usize>([usize; N]);
 
-pub struct Grid2D<T>(Vec<Vec<T>>);
+impl<const N: usize> Grid<{ 2 * N }, [usize; N]> for Cartesian<N> {
+  fn neighbours(&self, idx: &[usize; N]) -> [Option<[usize; N]>; 2 * N] {
+    let mut result = [None; 2 * N];
+    if self.0.into_iter().any(|w| w == 0) {
+      return result;
+    }
 
-impl<T> Index<(usize, usize)> for Grid2D<T> {
-  type Output = T;
-  fn index(&self, (i, j): (usize, usize)) -> &Self::Output {
-    &self.0[j][i]
+    for i in 0..N {
+      if idx[i] > 1 {
+        let mut n_idx = idx.clone();
+        n_idx[i] -= 1;
+        result[i].insert(n_idx)
+      }
+    }
+
+    for i in 0..N {
+      if idx[i] < self.0[i] - 1 {
+        let mut n_idx = idx.clone();
+        n_idx[i] += 1;
+        result[i + N].insert(n_idx)
+      }
+    }
+
+    result
   }
 }
 
-impl<T> IndexMut<(usize, usize)> for Grid2D<T> {
-  fn index_mut(&mut self, (i, j): (usize, usize)) -> &mut Self::Output {
-    &mut self.0[i][j]
-  }
-}
+pub struct CartesianWrap<const N: usize>([usize; N]);
 
-impl<T> Grid<4, (usize, usize)> for Grid2D<T> {
-  fn neighbours(&self, (i, j): &(usize, usize)) -> [Option<(usize, usize)>; 4] {
-    let w = self.0.get(0).map(|row| row.len()).unwrap_or(0);
-    let h = self.0.len();
-    [
-      (*j > 0).then_some((*i, j - 1)),
-      (*i > 0).then_some((i - 1, *j)),
-      (*i < w - 1).then_some((i + 1, *j)),
-      (*j < h - 1).then_some((*i, j + 1)),
-    ]
+impl<const N: usize> Grid<{ 2 * N }, [usize; N]> for Cartesian<N> {
+  fn neighbours(&self, idx: &[usize; N]) -> [Option<[usize; N]>; 2 * N] {
+    let mut result = [None; 2 * N];
+    if self.0.into_iter().any(|w| w == 0) {
+      return result;
+    }
+
+    for i in 0..N {
+      let mut n_idx = idx.clone();
+      n_idx[i] = (n_idx[i] + (self.0[i] - 1)) % self.0[i];
+      result[i].insert(n_idx);
+    }
+
+    for i in 0..N {
+      let mut n_idx = idx.clone();
+      n_idx[i] = (n_idx[i] + 1) % self.0[i];
+      result[i + N].insert(n_idx);
+    }
+
+    result
   }
 }

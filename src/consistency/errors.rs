@@ -1,6 +1,6 @@
 use std::{collections::TryReserveError, fmt::Display};
 
-use super::WorkerBagError;
+use super::super::utility::WorkerBagError;
 
 #[derive(Debug)]
 pub struct AC3Error<Idx> {

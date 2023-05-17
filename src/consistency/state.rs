@@ -3,7 +3,7 @@ use std::hash::Hash;
 use std::ops::DerefMut;
 use std::sync::RwLock;
 
-use super::{Domain, WorkerBag};
+use super::{super::WorkerBag, Domain};
 use crate::Grid;
 
 pub struct State<const N: usize, Idx, G: Grid<N, Idx>> {

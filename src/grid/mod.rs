@@ -1,7 +1,11 @@
-use std::ops::Index;
+mod cartesian_2d;
+pub use cartesian_2d::*;
 
-mod cartesian;
-pub use cartesian::*;
+/// This is just a nice way of implementing ND cartesian grids, but it can't be
+/// implemented until const parameters of the form `{2 * N}` are introduced,
+/// i.e. the `const_evaluatable_checked` feature.
+// mod cartesian;
+// pub use cartesian::*;
 
 /// A discrete grid can be defined in terms of a coordinate system and the
 /// neighbours for a given index in the coordinate system.
@@ -16,26 +20,4 @@ pub use cartesian::*;
 /// multiple implementations for the same no. neighbours).
 pub trait Grid<const N: usize, Idx> {
   fn neighbours(&self, idx: &Idx) -> [Option<Idx>; N];
-}
-
-pub trait FromShapeFn<Idx>: Index<Idx> {
-  fn from_shape_fn<F: Fn(Idx) -> Self::Output>(shape: Idx, func: F) -> Self;
-}
-
-pub trait FromShapeClone<Idx>: FromShapeFn<Idx> + Sized
-where
-  Self::Output: Clone,
-{
-  fn from_shape_clone(shape: Idx, item: Self::Output) -> Self {
-    Self::from_shape_fn(shape, |_| item.clone())
-  }
-}
-
-pub trait FromShapeDefault<Idx>: FromShapeFn<Idx> + Sized
-where
-  Self::Output: Default,
-{
-  fn from_shape_default(shape: Idx) -> Self {
-    Self::from_shape_fn(shape, |_| Default::default())
-  }
 }
