@@ -1,6 +1,10 @@
+mod space;
+use space::Space;
 mod domain;
 use domain::Domain;
-mod state;
-pub use state::State;
 mod errors;
 pub use errors::*;
+mod ac3;
+pub use ac3::*;
+
+pub type State<const N: usize, Idx> = Space<Idx, Domain<N>>;

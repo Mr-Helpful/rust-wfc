@@ -4,6 +4,8 @@ mod utility;
 pub use utility::*;
 mod consistency;
 pub use consistency::*;
+mod search;
+pub use search::*;
 mod tiles;
 pub use tiles::*;
 

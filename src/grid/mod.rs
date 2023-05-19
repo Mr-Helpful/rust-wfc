@@ -20,4 +20,23 @@ pub use cartesian_2d::*;
 /// multiple implementations for the same no. neighbours).
 pub trait Grid<const N: usize, Idx> {
   fn neighbours(&self, idx: &Idx) -> [Option<Idx>; N];
+
+  /// Finds the updates to propagate for each direction in the given grid
+  /// for a given collection of tiles changed
+  fn updates_for(
+    &self,
+    idx: &Idx,
+    tiles: impl IntoIterator<Item = usize>,
+  ) -> Vec<(Idx, usize, usize)> {
+    tiles
+      .into_iter()
+      .flat_map(|tile| {
+        self
+          .neighbours(idx)
+          .into_iter()
+          .enumerate()
+          .filter_map(move |(side, optn)| optn.map(|idx| (idx, side, tile)))
+      })
+      .collect()
+  }
 }

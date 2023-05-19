@@ -2,14 +2,14 @@ use std::array::from_fn;
 
 #[derive(Clone, Copy)]
 pub struct DomainEntry<const N: usize> {
-  pub(crate) valid: bool,
-  pub(crate) side_counts: [usize; N],
+  valid: bool,
+  side_counts: [usize; N],
 }
 
 #[derive(Clone, Default)]
 pub struct Domain<const N: usize> {
-  pub(crate) no_valid: usize,
-  pub(crate) entries: Vec<DomainEntry<N>>,
+  no_valid: usize,
+  entries: Vec<DomainEntry<N>>,
 }
 
 impl<const N: usize> Domain<N> {
@@ -25,18 +25,6 @@ impl<const N: usize> Domain<N> {
     }
   }
 
-  /// Generates a completely filled domain, i.e. all items present
-  pub fn full(size: usize) -> Self {
-    let full_entry = DomainEntry {
-      valid: true,
-      side_counts: [0; N],
-    };
-    Self {
-      no_valid: size,
-      entries: (0..size).map(|_| full_entry).collect(),
-    }
-  }
-
   /// Generates a domain containing a single item, with no info on side counts
   pub fn single(i: usize, size: usize) -> Self {
     let mut domain = Self::empty(size);
@@ -46,7 +34,7 @@ impl<const N: usize> Domain<N> {
   }
 
   /// Initialises a domain from a constraint on the values taken per side
-  pub fn from_constraint<C: Fn(usize, usize, usize) -> bool>(constraint: C, size: usize) -> Self {
+  pub fn constraint<C: Fn(usize, usize, usize) -> bool>(constraint: C, size: usize) -> Self {
     let entries: Vec<_> = (0..size)
       .map(|tile0| {
         let side_counts = from_fn(|side| {
@@ -67,15 +55,22 @@ impl<const N: usize> Domain<N> {
       entries,
     }
   }
+}
 
-  pub fn has(&self, item: usize) -> bool {
-    (0..self.entries.len()).contains(&item) && self.entries[item].valid
+impl<const N: usize> Domain<N> {
+  /// Whether there are no valid items left in the domain
+  pub fn is_empty(&self) -> bool {
+    self.no_valid == 0
   }
 
-  /// Removes an item from this domain, returning whether an entry was
-  /// removed due to this
+  /// Whether the domain contains the given item
+  pub fn contains(&self, item: usize) -> bool {
+    self.entries.get(item).map_or(false, |entry| entry.valid)
+  }
+
+  /// Removes an item from this domain
   pub fn remove_item(&mut self, item: usize) -> bool {
-    if !self.has(item) {
+    if !self.contains(item) {
       return false;
     }
     self.entries[item].valid = false;
@@ -86,7 +81,7 @@ impl<const N: usize> Domain<N> {
   /// Removes an item from a given side of the domain, returning whether an
   /// entry was actually removed due to this
   pub fn remove_side(&mut self, item: usize, side: usize) -> bool {
-    if self.no_valid == 0 || !self.has(item) {
+    if self.no_valid == 0 || !self.contains(item) {
       return false;
     }
 
@@ -114,6 +109,7 @@ impl<const N: usize> IntoIterator for Domain<N> {
   }
 }
 
+#[derive(Clone)]
 pub struct DomainIter<const N: usize> {
   i: usize,
   count: usize,

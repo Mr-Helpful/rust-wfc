@@ -107,7 +107,7 @@ impl<T: Send + Sync> WorkerBag<T> {
   ///
   /// # Panics
   /// Only when the worker function panics.
-  pub fn run<E, R>(&self, worker: impl Fn(T) -> Result<R, E> + Sync) -> WorkerBagResult<E>
+  pub fn run<R, E>(&self, worker: impl Fn(T) -> Result<R, E> + Sync) -> WorkerBagResult<E>
   where
     R: IntoIterator<Item = T>,
     E: Send,
@@ -125,8 +125,8 @@ impl<T: Send + Sync> WorkerBag<T> {
   /// Only when the worker function panics.
   pub fn run_on<R, E>(
     &self,
-    worker: impl Fn(T) -> Result<R, E> + Sync,
     tasks: impl IntoIterator<Item = T>,
+    worker: impl Fn(T) -> Result<R, E> + Sync,
   ) -> WorkerBagResult<E>
   where
     R: IntoIterator<Item = T>,
