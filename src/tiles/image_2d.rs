@@ -36,7 +36,7 @@ impl<T> ImageEdge2D<T> {
 }
 
 impl<T: Eq> Tileable<Side2D> for ImageEdge2D<T> {
-  fn fits_together(&self, other: &Self, side: &Side2D) -> bool {
+  fn tiles(&self, other: &Self, side: &Side2D) -> bool {
     self.edge(side).slice(s![..;-1]) == other.edge(&side.opposite())
   }
 }
@@ -58,7 +58,7 @@ impl<T: Clone> ImageGrid2D<T> {
 }
 
 impl<T: Eq + Clone> Tileable<Side2D> for ImageGrid2D<T> {
-  fn fits_together(&self, other: &Self, side: &Side2D) -> bool {
+  fn tiles(&self, other: &Self, side: &Side2D) -> bool {
     self.overlap(side).slice(s![..;-1, ..]) == other.overlap(&side.opposite())
   }
 }

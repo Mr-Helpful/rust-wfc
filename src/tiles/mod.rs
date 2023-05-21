@@ -10,5 +10,5 @@ pub trait Direction {
 
 pub trait Tileable<D: Direction> {
   /// Returns whether a tile can be placed next to this one in a given direction
-  fn fits_together(&self, other: &Self, side: &D) -> bool;
+  fn tiles(&self, other: &Self, side: &D) -> bool;
 }

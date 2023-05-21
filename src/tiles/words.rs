@@ -17,7 +17,7 @@ impl Direction for WordEnd {
 pub struct Word(String);
 
 impl Tileable<WordEnd> for Word {
-  fn fits_together(&self, other: &Self, side: &WordEnd) -> bool {
+  fn tiles(&self, other: &Self, side: &WordEnd) -> bool {
     use WordEnd::*;
     let (first, second) = match side {
       Prefix => (other, self),
