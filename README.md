@@ -4,15 +4,15 @@ This project aims to implement wave function collapse in about the most generic 
 
 ## TODO
 
-- [ ] implement tile selection
-  - [ ] create trait for selecting a tile
-  - [ ] randomised tile choices
-  - [ ] weighted tile choices
-- [ ] implement backtracking/failure heuristics
-  - [ ] create trait for handling contradictions
-  - [ ] implement propagating approach
-  - [ ] implement resetting approach
-  - [ ] implement backtracking approach
+- [x] implement tile selection
+  - [x] create trait for selecting a tile
+  - [x] randomised tile choices
+  - [x] weighted tile choices
+- [x] implement backtracking/failure heuristics
+  - [x] create trait for handling contradictions
+  - [x] implement propagating approach
+  - [x] implement resetting approach
+  - [x] implement backtracking approach
 - [ ] implement domain selection
   - [ ] create trait for domain heuristics
   - [ ] implement MRV heuristic
