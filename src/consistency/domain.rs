@@ -63,6 +63,11 @@ impl<const N: usize> Domain<N> {
     self.no_valid == 0
   }
 
+  /// Whether there is a single valid item left in the domain
+  pub fn is_single(&self) -> bool {
+    self.no_valid == 1
+  }
+
   /// Whether the domain contains the given item
   pub fn contains(&self, item: usize) -> bool {
     self.entries.get(item).map_or(false, |entry| entry.valid)
@@ -94,6 +99,14 @@ impl<const N: usize> Domain<N> {
     entry.valid = false;
     self.no_valid -= 1;
     true
+  }
+
+  pub fn iter(&self) -> impl Iterator<Item = usize> + '_ {
+    self
+      .entries
+      .iter()
+      .enumerate()
+      .filter_map(|(i, entry)| entry.valid.then_some(i))
   }
 }
 

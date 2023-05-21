@@ -27,7 +27,7 @@ pub struct WorkerBag<T> {
 }
 
 const JUSTIFICATION: &str = r#"
-We only ever use `.pop`, `.push` or `clear` with this lock
+We only ever `.pop`, `.push` or `clear` with this lock
 and we check whether `.push` can reserve beforehand.
 Therefore, we'll never panic whilst writing to this lock.
 "#;

@@ -8,6 +8,8 @@ mod search;
 pub use search::*;
 mod tiles;
 pub use tiles::*;
+mod sampling;
+pub use sampling::*;
 
 pub fn add(left: usize, right: usize) -> usize {
   left + right

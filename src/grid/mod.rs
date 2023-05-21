@@ -1,9 +1,9 @@
-mod cartesian_2d;
-pub use cartesian_2d::*;
+mod cartesian;
+pub use cartesian::*;
 
-/// This is just a nice way of implementing ND cartesian grids, but it can't be
-/// implemented until const parameters of the form `{2 * N}` are introduced,
-/// i.e. the `const_evaluatable_checked` feature.
+/// This is just a nice way of implementing arbitrary ND cartesian grids, but
+/// it can't be implemented until const parameters of the form `{2 * N}` are
+/// introduced, i.e. the `const_evaluatable_checked` feature.
 // mod cartesian;
 // pub use cartesian::*;
 
