@@ -1,10 +1,10 @@
-mod image_2d;
-pub use image_2d::*;
+mod images;
+pub use images::*;
 mod words;
 pub use words::*;
 
 pub trait Direction {
-  /** Fetches the direction immediately opposite this one */
+  /// Fetches the direction immediately opposite this one
   fn opposite(&self) -> Self;
 }
 

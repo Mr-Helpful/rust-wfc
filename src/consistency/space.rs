@@ -3,14 +3,8 @@ use std::hash::Hash;
 use std::ops::Deref;
 use std::sync::RwLock;
 
+/// An N dimensional space, intended to be used by multiple threads at once
 pub struct Space<Idx, T>(RwLock<HashMap<Idx, RwLock<T>>>);
-
-impl<Idx, T> Deref for Space<Idx, T> {
-  type Target = RwLock<HashMap<Idx, RwLock<T>>>;
-  fn deref(&self) -> &Self::Target {
-    &self.0
-  }
-}
 
 impl<Idx: Clone + Hash + Eq, T: Clone> Clone for Space<Idx, T> {
   fn clone(&self) -> Self {
@@ -37,6 +31,7 @@ impl<Idx: Hash + Eq + Clone, T> Space<Idx, T> {
   pub fn or_insert_at(&self, idx: &Idx, value: T) {
     if !self.0.read().unwrap().contains_key(idx) {
       self
+        .0
         .write()
         .expect("this is the only write we'll ever use, so we can guarantee no poisoned locks.")
         .insert(idx.clone(), RwLock::new(value));

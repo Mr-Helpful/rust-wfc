@@ -4,6 +4,8 @@ mod domain;
 pub use domain::Domain;
 mod errors;
 pub use errors::*;
+mod constraint;
+pub use constraint::*;
 
 use crate::{Grid, WorkerBag};
 use std::hash::Hash;
@@ -22,14 +24,14 @@ pub fn ac3<const N: usize, Idx>(
   domains: CSPDomains<N, Idx>,
   domain_size: usize,
   grid: &(impl Grid<N, Idx> + Send + Sync),
+  constraint: &Constraint<N>,
   start: &Idx,
   item: usize,
-  constraint: impl (Fn(usize, usize, usize) -> bool) + Sync,
 ) -> Result<CSPDomains<N, Idx>, AC3ErrorKind>
 where
   Idx: Hash + Eq + Clone + Send + Sync,
 {
-  let domain_hint = Domain::constraint(&constraint, domain_size);
+  let domain_hint = Domain::constraint(constraint, domain_size);
   let workers: WorkerBag<(Idx, usize, usize)> = Default::default();
 
   if domains.exists(start) && !domains.read_at(start, |d| d.contains(item)).unwrap() {
@@ -51,7 +53,7 @@ where
     // calculate tiles to be removed from this neighbour
     // @note this will update the domain by removing those tiles
     let tiles_removed = (0..domain_size).filter(|&tile1| {
-      constraint(tile, side, tile1)
+      constraint[(tile, tile1, side)]
         && domains
           .write_at(&idx, |d| d.remove_side(tile, side))
           .unwrap()

@@ -1,13 +1,12 @@
-use crate::{ac3, AC3Error, CSPDomains, Domain, Grid, Sampler, State};
+use crate::{ac3, AC3Error, CSPDomains, Constraint, Domain, Grid, Sampler, State};
 use std::{collections::HashMap, hash::Hash};
 
-pub struct CSPState<'a, const N: usize, Idx, O, G, H, S, C>
+pub struct CSPState<'a, const N: usize, Idx, O, G, H, S>
 where
   O: Ord,
   G: Grid<N, Idx>,
   H: Fn(&Idx, &Domain<N>) -> O,
   S: Sampler,
-  C: Fn(usize, usize, usize) -> bool,
 {
   domains: CSPDomains<N, Idx>,
   domain_size: usize,
@@ -15,17 +14,16 @@ where
 
   rank_domain: &'a H,
   pick_domain: S,
-  constraint: &'a C,
+  constraint: &'a Constraint<N>,
 }
 
-impl<'a, const N: usize, Idx, O, G, H, S, C> State for CSPState<'a, N, Idx, O, G, H, S, C>
+impl<'a, const N: usize, Idx, O, G, H, S> State for CSPState<'a, N, Idx, O, G, H, S>
 where
   O: Ord,
   Idx: Clone + Hash + Eq + Send + Sync,
   G: Grid<N, Idx> + Send + Sync,
   H: Fn(&Idx, &Domain<N>) -> O,
   S: Sampler + Clone,
-  C: Fn(usize, usize, usize) -> bool + Send + Sync,
 {
   type Action = (Idx, usize);
   type Error = AC3Error<Idx>;
@@ -66,9 +64,9 @@ where
       self.domains.clone(),
       self.domain_size,
       self.grid,
+      self.constraint,
       idx,
       *tile,
-      self.constraint,
     )
     .map_err(|kind| AC3Error::new(idx.clone(), *tile, kind))?;
 
