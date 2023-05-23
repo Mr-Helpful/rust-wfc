@@ -1,6 +1,6 @@
 use crate::Sampler;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct First;
 
 impl Sampler for First {

@@ -3,6 +3,7 @@ use crate::{Search, State};
 /// A backtracker should perform a DFS of states:
 /// 1. keep a history of all states and all actions taken for the state
 /// 2. upon failing, retreat to the last uncompleted state and try a new one
+#[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct DepthFirst<S: State> {
   history: Vec<(S, Vec<S::Action>)>,
 }

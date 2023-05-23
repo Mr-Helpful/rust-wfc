@@ -9,7 +9,7 @@ use crate::{Direction, Tileable};
 /// by removing some of the type parameters required to express a constraint,
 /// i.e. not having to write out `<T: Tileable<D>, D: Direction>` every time we
 /// use the constraint.
-#[derive(Clone)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct Constraint<const N: usize> {
   valid: Vec<[bool; N]>,
   no_tiles: usize,

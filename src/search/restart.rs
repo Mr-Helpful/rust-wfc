@@ -1,5 +1,6 @@
 use crate::{Search, State};
 
+#[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Restart<S: State> {
   item: S,
 }

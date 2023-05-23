@@ -1,6 +1,7 @@
 /// A generic N dimensional cartesian grid, for both finite and wrapped grids
 use super::Grid;
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Cartesian<const N: usize>([usize; N]);
 
 impl<const N: usize> Grid<{ 2 * N }, [usize; N]> for Cartesian<N> {

@@ -6,6 +6,7 @@ use super::Grid;
 #[macro_export]
 macro_rules! cartesian_grid {
   ($name:ident, $ndims:literal) => {
+    #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
     pub struct $name([usize; $ndims]);
 
     impl Grid<{ 2 * $ndims }, [usize; $ndims]> for $name {
@@ -46,6 +47,7 @@ cartesian_grid!(Cartesian5D, 5);
 #[macro_export]
 macro_rules! cartesian_wrapped_grid {
   ($name:ident, $ndims:literal) => {
+    #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
     pub struct $name([usize; $ndims]);
 
     impl Grid<{ 2 * $ndims }, [usize; $ndims]> for $name {

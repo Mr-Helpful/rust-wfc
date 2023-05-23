@@ -1,7 +1,7 @@
 use crate::Sampler;
 use rand::Rng;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Default)]
 pub struct Uniform<R: Rng> {
   rng: R,
 }

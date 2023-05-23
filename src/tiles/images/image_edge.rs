@@ -1,9 +1,10 @@
 use super::{Direction, End, Side, Tileable};
 use ndarray::{Array, ArrayView, Axis, Dimension, Slice};
 
-pub struct ImageEdge<T, D>(pub Array<T, D>);
+#[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
+pub struct ImageEdge<T, D: Dimension>(pub Array<T, D>);
 
-impl<T, D> From<Array<T, D>> for ImageEdge<T, D> {
+impl<T, D: Dimension> From<Array<T, D>> for ImageEdge<T, D> {
   fn from(value: Array<T, D>) -> Self {
     Self(value)
   }

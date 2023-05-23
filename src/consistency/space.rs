@@ -4,6 +4,7 @@ use std::ops::Deref;
 use std::sync::RwLock;
 
 /// An N dimensional space, intended to be used by multiple threads at once
+#[derive(Debug)]
 pub struct Space<Idx, T>(RwLock<HashMap<Idx, RwLock<T>>>);
 
 impl<Idx: Clone + Hash + Eq, T: Clone> Clone for Space<Idx, T> {

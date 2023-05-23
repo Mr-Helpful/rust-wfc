@@ -2,7 +2,7 @@ use crate::Constraint;
 use std::array;
 
 /// A set of indices that are currently valid for a cell
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Domain<const N: usize> {
   num_valid: usize,
   entries: Vec<(bool, [usize; N])>,

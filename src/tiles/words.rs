@@ -1,7 +1,9 @@
 use super::{Direction, Tileable};
 
+#[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub enum WordEnd {
   Prefix,
+  #[default]
   Suffix,
 }
 
@@ -14,6 +16,7 @@ impl Direction for WordEnd {
   }
 }
 
+#[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Word(String);
 
 impl Tileable<WordEnd> for Word {

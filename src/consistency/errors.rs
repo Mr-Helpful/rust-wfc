@@ -2,7 +2,7 @@ use std::{collections::TryReserveError, fmt::Display};
 
 use super::super::utility::WorkerBagError;
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct AC3Error<Idx> {
   domain: Idx,
   item: usize,
@@ -41,8 +41,9 @@ impl<Idx> AC3Error<Idx> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub enum AC3ErrorKind {
+  #[default]
   InvalidChoice,
   InconsistentChoice,
   BufferFilled(TryReserveError),
