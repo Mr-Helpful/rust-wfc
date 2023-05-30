@@ -3,11 +3,11 @@ use space::Space;
 mod domain;
 pub use domain::Domain;
 mod errors;
-pub use errors::*;
+pub use errors::{AC3Error, AC3ErrorKind};
 mod constraint;
-pub use constraint::*;
+pub use constraint::Constraint;
 
-use crate::{Grid, WorkerBag};
+use crate::{grid::Grid, utility::WorkerBag};
 use std::hash::Hash;
 
 pub type CSPDomains<const N: usize, Idx> = Space<Idx, Domain<N>>;

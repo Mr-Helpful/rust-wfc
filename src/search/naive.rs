@@ -1,4 +1,4 @@
-use crate::{Search, State};
+use super::{Search, State};
 
 /// Generates a single failure/success and then None repeatedly
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]

@@ -1,4 +1,4 @@
-use crate::Sampler;
+use super::Sampler;
 use rand::Rng;
 
 /// Randomly takes any entry in the collection with equal likelihood

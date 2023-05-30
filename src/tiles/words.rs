@@ -1,13 +1,13 @@
 use super::{Direction, Tileable};
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub enum WordEnd {
+pub enum WordSide {
   Prefix,
   #[default]
   Suffix,
 }
 
-impl Direction for WordEnd {
+impl Direction for WordSide {
   fn opposite(&self) -> Self {
     match self {
       Self::Prefix => Self::Suffix,
@@ -19,9 +19,9 @@ impl Direction for WordEnd {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Word(String);
 
-impl Tileable<WordEnd> for Word {
-  fn tiles(&self, other: &Self, side: &WordEnd) -> bool {
-    use WordEnd::*;
+impl Tileable<WordSide> for Word {
+  fn tiles(&self, other: &Self, side: &WordSide) -> bool {
+    use WordSide::*;
     let (first, second) = match side {
       Prefix => (other, self),
       Suffix => (self, other),

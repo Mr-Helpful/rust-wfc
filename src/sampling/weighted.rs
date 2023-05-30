@@ -1,6 +1,5 @@
-use crate::Sampler;
-use rand::distributions::WeightedIndex;
-use rand::Rng;
+use super::Sampler;
+use rand::{distributions::WeightedIndex, Rng};
 
 /// Uses each entry to fetch the probability at which it should be returned
 ///

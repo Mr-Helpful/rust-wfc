@@ -1,4 +1,4 @@
-use crate::Constraint;
+use super::Constraint;
 use std::array;
 
 /// A generic domain for a given cell, defined over the valid indices

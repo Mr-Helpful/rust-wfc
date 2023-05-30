@@ -1,7 +1,7 @@
 mod images;
-pub use images::*;
+pub use images::{ImageEdge, ImageEnd, ImageGrid, ImageSide};
 mod words;
-pub use words::*;
+pub use words::{Word, WordSide};
 
 pub trait Direction {
   /// Fetches the direction immediately opposite this one

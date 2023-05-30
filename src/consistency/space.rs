@@ -1,7 +1,4 @@
-use std::collections::HashMap;
-use std::hash::Hash;
-use std::ops::Deref;
-use std::sync::RwLock;
+use std::{collections::HashMap, hash::Hash, ops::Deref, sync::RwLock};
 
 /// An N dimensional space, intended to be used by multiple threads at once
 ///

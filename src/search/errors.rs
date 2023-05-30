@@ -1,4 +1,4 @@
-use crate::AC3Error;
+use crate::consistency::AC3Error;
 
 pub enum WFCError<Idx> {
   GetActionError,

@@ -1,4 +1,4 @@
-use crate::{Search, State};
+use super::{Search, State};
 
 /// Performs a Depth First Search of possible states.
 ///

@@ -1,4 +1,4 @@
-use crate::{Search, State};
+use super::{Search, State};
 
 /// Generates multiple successes/failures by restarting from an initial state
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]

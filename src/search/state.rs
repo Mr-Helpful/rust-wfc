@@ -1,5 +1,9 @@
-use super::WFCError;
-use crate::{ac3, AC3Error, CSPDomains, Constraint, Grid, Sampler, State};
+use super::{State, WFCError};
+use crate::{
+  consistency::{ac3, AC3Error, CSPDomains, Constraint},
+  grid::Grid,
+  sampling::Sampler,
+};
 use std::hash::Hash;
 
 /// A definition of state for the wfc algorithm.

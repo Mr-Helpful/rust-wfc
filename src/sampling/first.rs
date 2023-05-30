@@ -1,4 +1,4 @@
-use crate::Sampler;
+use super::Sampler;
 
 /// Takes the first entry from the given collection
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

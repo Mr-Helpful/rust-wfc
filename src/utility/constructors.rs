@@ -7,7 +7,10 @@ pub trait FromFnCount<T>: FromIterator<T> {
 }
 
 pub trait FromShapeFn<Idx>: Index<Idx> {
-  fn from_shape_fn<F: Fn(Idx) -> Self::Output>(shape: Idx, func: F) -> Self;
+  fn from_shape_fn(
+    shape: Idx,
+    func: impl Fn(Idx) -> Self::Output,
+  ) -> Self;
 }
 
 pub trait FromShapeClone<Idx>: FromShapeFn<Idx> + Sized

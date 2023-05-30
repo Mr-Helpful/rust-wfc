@@ -1,11 +1,11 @@
 mod backtrack;
-pub use backtrack::*;
+pub use backtrack::Backtrack;
 mod naive;
-pub use naive::*;
+pub use naive::Naive;
 mod restart;
-pub use restart::*;
+pub use restart::Restart;
 mod state;
-pub use state::*;
+pub use state::WFCState;
 mod errors;
 pub use errors::WFCError;
 

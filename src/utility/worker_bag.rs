@@ -1,7 +1,15 @@
-use std::{collections::TryReserveError, sync::RwLock};
+use std::{
+  collections::TryReserveError,
+  hash::{Hash, Hasher},
+  ops::Deref,
+  sync::RwLock,
+};
 
 use rayon::join;
 
+/// An error representing either a failure from the task we're performing
+/// or from the worker bag itself (the bag'll only fail when it's filled
+/// completely and we attempt to add another task).
 pub enum WorkerBagError<E> {
   WorkerError(E),
   BagFullError(TryReserveError),
@@ -21,6 +29,9 @@ impl<E> From<TryReserveError> for WorkerBagError<E> {
 
 type WorkerBagResult<E> = Result<(), WorkerBagError<E>>;
 
+/// A collection of tasks that can be run in parallel<br>
+/// This is intended to be used when parallel updates may trigger other updates.
+#[derive(Debug)]
 pub struct WorkerBag<T> {
   failed: RwLock<bool>,
   tasks: RwLock<Vec<T>>,
@@ -32,12 +43,46 @@ and we check whether `.push` can reserve beforehand.
 Therefore, we'll never panic whilst writing to this lock.
 "#;
 
+impl<T: Clone> Clone for WorkerBag<T> {
+  fn clone(&self) -> Self {
+    Self {
+      failed: RwLock::new(*self.failed.read().unwrap()),
+      tasks: RwLock::new(self.tasks.read().unwrap().clone()),
+    }
+  }
+}
+
 impl<T> Default for WorkerBag<T> {
   fn default() -> Self {
     Self {
       failed: RwLock::new(false),
       tasks: RwLock::new(Vec::new()),
     }
+  }
+}
+
+impl<T: PartialEq> PartialEq<WorkerBag<T>> for WorkerBag<T> {
+  fn eq(&self, other: &WorkerBag<T>) -> bool {
+    (self
+      .failed
+      .read()
+      .ok()
+      .zip(other.failed.read().ok())
+      .map_or(false, |(failed0, failed1)| failed0.eq(&failed1)))
+      && (self
+        .tasks
+        .read()
+        .ok()
+        .zip(other.tasks.read().ok())
+        .map_or(false, |(tasks0, tasks1)| tasks0.eq(tasks1.deref())))
+  }
+}
+impl<T: PartialEq> Eq for WorkerBag<T> {}
+
+impl<T: Hash> Hash for WorkerBag<T> {
+  fn hash<H: Hasher>(&self, state: &mut H) {
+    self.failed.read().unwrap().hash(state);
+    self.tasks.read().unwrap().hash(state)
   }
 }
 

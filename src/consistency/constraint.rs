@@ -1,6 +1,5 @@
+use crate::tiles::{Direction, Tileable};
 use std::{array, ops::Index};
-
-use crate::{Direction, Tileable};
 
 /// A generic constraint, defined over the indices of tiles and sides.
 ///
