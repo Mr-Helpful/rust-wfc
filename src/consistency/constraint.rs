@@ -16,7 +16,11 @@ pub struct Constraint<const N: usize> {
 }
 
 impl<const N: usize> Constraint<N> {
-  pub fn new<T: Tileable<D>, D: Direction>(tiles: &[T], sides: &[D; N]) -> Self {
+  pub fn new<T, D>(tiles: &[T], sides: &[D; N]) -> Self
+  where
+    T: Tileable<D>,
+    D: Direction,
+  {
     let no_tiles = tiles.len();
     Self {
       valid: (0..no_tiles)

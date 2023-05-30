@@ -11,7 +11,7 @@ impl<T, D: Dimension> From<Array<T, D>> for ImageGrid<T, D> {
 }
 
 impl<T, D: Dimension> ImageGrid<T, D> {
-  pub(crate) fn overlap(&self, side: &Side) -> Option<ArrayView<T, D>> {
+  fn overlap(&self, side: &Side) -> Option<ArrayView<T, D>> {
     for i in 0..self.0.ndim() {
       match side {
         Side(Axis(j), End::Low) if &i == j => {

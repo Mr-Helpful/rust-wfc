@@ -11,7 +11,7 @@ impl<T, D: Dimension> From<Array<T, D>> for ImageEdge<T, D> {
 }
 
 impl<T, D: Dimension> ImageEdge<T, D> {
-  pub(crate) fn edge_of(&self, side: &Side) -> Option<ArrayView<T, D>> {
+  fn edge_of(&self, side: &Side) -> Option<ArrayView<T, D>> {
     for i in 0..self.0.ndim() {
       match side {
         Side(Axis(j), End::Low) if &i == j => {

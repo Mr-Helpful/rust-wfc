@@ -68,9 +68,7 @@ impl<Idx: Clone, T> Space<Idx, T> {
   pub fn keys(&self) -> Vec<Idx> {
     self.0.read().unwrap().keys().cloned().collect()
   }
-}
 
-impl<Idx: Clone, T> Space<Idx, T> {
   pub fn collect_key_func<I: IntoIterator>(
     &self,
     op: impl Fn(&T) -> I,

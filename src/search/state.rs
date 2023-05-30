@@ -1,18 +1,12 @@
+use super::WFCError;
 use crate::{ac3, AC3Error, CSPDomains, Constraint, Grid, Sampler, State};
 use std::hash::Hash;
-
-mod errors;
-pub use errors::WFCError;
 
 /// A definition of state for the wfc algorithm.
 ///
 /// Bundles together everything needed to assign a tile and propagate
 /// constraints.
-pub struct WFCState<'a, const N: usize, Idx, G, S>
-where
-  G: Grid<N, Idx>,
-  S: Sampler,
-{
+pub struct WFCState<'a, const N: usize, Idx, G, S> {
   /// A set of domains to assign to and constrain values within.
   domains: CSPDomains<N, Idx>,
   /// The maximum number of tiles that can be in any one domain.
@@ -29,9 +23,8 @@ where
 
 impl<'a, const N: usize, Idx, G, S> WFCState<'a, N, Idx, G, S>
 where
-  Idx: Eq + Hash,
+  Idx: Hash + Eq,
   G: Grid<N, Idx>,
-  S: Sampler,
 {
   /// Helper method to calculate the AC3 heuristic for a domain
   fn ac3_heuristic(&self, idx: &Idx) -> [usize; 2] {
@@ -72,7 +65,7 @@ where
   S: Sampler + Clone,
 {
   type Action = (Idx, usize);
-  type Error = errors::WFCError<Idx>;
+  type Error = WFCError<Idx>;
 
   fn is_goal(&self) -> bool {
     self.domains.all(|d| d.is_single())
@@ -94,16 +87,14 @@ where
       .unwrap()
   }
 
-  type PickError = errors::WFCError<Idx>;
+  type PickError = WFCError<Idx>;
   fn pick_action<'b>(
     &'b mut self,
     actions: impl IntoIterator<Item = &'b Self::Action>,
   ) -> Result<Self::Action, Self::PickError> {
     let actions: Vec<_> = actions.into_iter().collect();
     if actions.is_empty() {
-      return Err(errors::WFCError::PickActionError(
-        "No actions available".to_owned(),
-      ));
+      return Err(WFCError::PickActionError("No actions available".to_owned()));
     }
 
     let (idx, _) = actions[0];
