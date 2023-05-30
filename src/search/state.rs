@@ -1,32 +1,78 @@
-use crate::{ac3, AC3Error, CSPDomains, Constraint, Domain, Grid, Sampler, State};
-use std::{collections::HashMap, hash::Hash};
+use crate::{ac3, AC3Error, CSPDomains, Constraint, Grid, Sampler, State};
+use std::hash::Hash;
 
-pub struct CSPState<'a, const N: usize, Idx, O, G, H, S>
+mod errors;
+pub use errors::WFCError;
+
+/// A definition of state for the wfc algorithm.
+///
+/// Bundles together everything needed to assign a tile and propagate
+/// constraints.
+pub struct WFCState<'a, const N: usize, Idx, G, S>
 where
-  O: Ord,
   G: Grid<N, Idx>,
-  H: Fn(&Idx, &Domain<N>) -> O,
   S: Sampler,
 {
+  /// A set of domains to assign to and constrain values within.
   domains: CSPDomains<N, Idx>,
+  /// The maximum number of tiles that can be in any one domain.
   domain_size: usize,
+  /// The grid used, informs which domains are constrained by each other.
   grid: &'a G,
 
-  rank_domain: &'a H,
+  /// Picks the tile that should be assigned from a collection of tiles.
+  /// This can either be deterministic or random, to allow for tile variation.
   pick_domain: S,
+  /// A constraint on which tiles can be placed next to each other.
   constraint: &'a Constraint<N>,
 }
 
-impl<'a, const N: usize, Idx, O, G, H, S> State for CSPState<'a, N, Idx, O, G, H, S>
+impl<'a, const N: usize, Idx, G, S> WFCState<'a, N, Idx, G, S>
 where
-  O: Ord,
+  Idx: Eq + Hash,
+  G: Grid<N, Idx>,
+  S: Sampler,
+{
+  /// Helper method to calculate the AC3 heuristic for a domain
+  fn ac3_heuristic(&self, idx: &Idx) -> [usize; 2] {
+    let values: Vec<_> = self.domains.read_at(idx, |d| d.iter().collect()).unwrap();
+
+    let mrv = values.len();
+    if mrv == 0 {
+      return [0, 0];
+    }
+
+    let degree = self
+      .grid
+      .neighbours(idx)
+      .into_iter()
+      .enumerate()
+      .filter_map(|(side, optn)| {
+        self.domains.read_at(&optn?, |d| {
+          d.iter()
+            .map(|tile1| {
+              values
+                .iter()
+                .filter(|&&tile0| self.constraint[(tile0, tile1, side)])
+                .count()
+            })
+            .sum::<usize>()
+        })
+      })
+      .sum();
+
+    [self.domain_size - mrv, degree]
+  }
+}
+
+impl<'a, const N: usize, Idx, G, S> State for WFCState<'a, N, Idx, G, S>
+where
   Idx: Clone + Hash + Eq + Send + Sync,
   G: Grid<N, Idx> + Send + Sync,
-  H: Fn(&Idx, &Domain<N>) -> O,
   S: Sampler + Clone,
 {
   type Action = (Idx, usize);
-  type Error = AC3Error<Idx>;
+  type Error = errors::WFCError<Idx>;
 
   fn is_goal(&self) -> bool {
     self.domains.all(|d| d.is_single())
@@ -34,28 +80,35 @@ where
 
   type ActnIter = Vec<(Idx, usize)>;
   fn get_actions(&self) -> Self::ActnIter {
+    let idxs = self.domains.keys();
+    let max_idx = idxs
+      .into_iter()
+      .max_by_key(|idx| self.ac3_heuristic(idx))
+      .unwrap();
+
     self
       .domains
-      .collect_key_func(|d| d.iter().collect::<Vec<_>>())
-      .expect("We should be able to access the domains")
+      .read_at(&max_idx, |d| {
+        d.iter().map(|tile| (max_idx.clone(), tile)).collect()
+      })
+      .unwrap()
   }
 
-  type PickError = AC3Error<Idx>; // not currently using this
+  type PickError = errors::WFCError<Idx>;
   fn pick_action<'b>(
     &'b mut self,
     actions: impl IntoIterator<Item = &'b Self::Action>,
   ) -> Result<Self::Action, Self::PickError> {
-    let mut idx_map: HashMap<Idx, Vec<usize>> = Default::default();
-    for (idx, tile) in actions {
-      idx_map.entry(idx.clone()).or_default().push(*tile);
+    let actions: Vec<_> = actions.into_iter().collect();
+    if actions.is_empty() {
+      return Err(errors::WFCError::PickActionError(
+        "No actions available".to_owned(),
+      ));
     }
 
-    let (idx, tiles) = idx_map
-      .into_iter()
-      .max_by_key(|(idx, _)| self.domains.read_at(idx, |d| (self.rank_domain)(idx, d)))
-      .unwrap();
-
-    Ok((idx, self.pick_domain.sample(&tiles)))
+    let (idx, _) = actions[0];
+    let tiles: Vec<_> = actions.into_iter().map(|(_, tile)| *tile).collect();
+    Ok((idx.clone(), self.pick_domain.sample(&tiles)))
   }
 
   type TakeError = AC3Error<Idx>;
@@ -75,7 +128,6 @@ where
       domain_size: self.domain_size,
       grid: self.grid,
 
-      rank_domain: self.rank_domain,
       pick_domain: self.pick_domain.clone(),
       constraint: self.constraint,
     })

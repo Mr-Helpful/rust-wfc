@@ -13,10 +13,6 @@ This project aims to implement wave function collapse in about the most generic 
   - [x] implement propagating approach
   - [x] implement resetting approach
   - [x] implement backtracking approach
-- [ ] implement domain selection
-  - [ ] create trait for domain heuristics
-  - [ ] implement MRV heuristic
-  - [ ] implement degree heuristic
 
 ## The algorithm
 

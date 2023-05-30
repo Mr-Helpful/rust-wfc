@@ -1,14 +1,31 @@
 use crate::{Search, State};
 
-/// A backtracker should perform a DFS of states:
-/// 1. keep a history of all states and all actions taken for the state
-/// 2. upon failing, retreat to the last uncompleted state and try a new one
+/// Performs a Depth First Search of possible states.
+///
+/// This will generate states until either an error is thrown or a goal state
+/// is generated. This final state/error will then be output and the search
+/// will backtrack to the last non-goal/valid state and make a different choice
+/// for its action.
+///
+/// For example, we could get the trace:
+/// 1. @state_0, actions {a, b}
+/// 1. state_0 --{a}-> state_1
+/// 1. @state_1, actions {c}
+/// 1. state_1 --{c}-> error
+/// 1. output Err(error), backtrack to state_1
+/// 1. @state_1, actions {}
+/// 1. no actions left, backtrack to state_0
+/// 1. @state_0, actions {b}
+/// 1. state_0 --{b}-> state_2
+/// 1. @state_2, goal reached
+/// 1. output Ok(state_2), backtrack to state_0
+/// 1. no actions left, backtrack and finish
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
-pub struct DepthFirst<S: State> {
+pub struct Backtrack<S: State> {
   history: Vec<(S, Vec<S::Action>)>,
 }
 
-impl<S: State> Iterator for DepthFirst<S>
+impl<S: State> Iterator for Backtrack<S>
 where
   S::Action: Eq,
 {
@@ -42,7 +59,7 @@ where
   }
 }
 
-impl<S: State> Search<S> for DepthFirst<S>
+impl<S: State> Search<S> for Backtrack<S>
 where
   S::Action: Eq,
 {

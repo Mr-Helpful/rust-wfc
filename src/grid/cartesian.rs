@@ -6,6 +6,9 @@ use super::Grid;
 #[macro_export]
 macro_rules! cartesian_grid {
   ($name:ident, $ndims:literal) => {
+    /// A cartesian grid
+    ///
+    /// The grid has a defined size, outside of which indices aren't defined
     #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
     pub struct $name([usize; $ndims]);
 
@@ -38,15 +41,19 @@ macro_rules! cartesian_grid {
   };
 }
 
-cartesian_grid!(Cartesian1D, 1);
-cartesian_grid!(Cartesian2D, 2);
-cartesian_grid!(Cartesian3D, 3);
-cartesian_grid!(Cartesian4D, 4);
-cartesian_grid!(Cartesian5D, 5);
+cartesian_grid!(Cartesian1, 1);
+cartesian_grid!(Cartesian2, 2);
+cartesian_grid!(Cartesian3, 3);
+cartesian_grid!(Cartesian4, 4);
+cartesian_grid!(Cartesian5, 5);
 
 #[macro_export]
 macro_rules! cartesian_wrapped_grid {
   ($name:ident, $ndims:literal) => {
+    /// A cartesian wrapped grid
+    ///
+    /// The grid has a defined size, outside of which indices are wrapped around
+    /// back around to the opposite edge
     #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
     pub struct $name([usize; $ndims]);
 
@@ -75,8 +82,8 @@ macro_rules! cartesian_wrapped_grid {
   };
 }
 
-cartesian_wrapped_grid!(CartesianWrapped1D, 1);
-cartesian_wrapped_grid!(CartesianWrapped2D, 2);
-cartesian_wrapped_grid!(CartesianWrapped3D, 3);
-cartesian_wrapped_grid!(CartesianWrapped4D, 4);
-cartesian_wrapped_grid!(CartesianWrapped5D, 5);
+cartesian_wrapped_grid!(Wrapped1, 1);
+cartesian_wrapped_grid!(Wrapped2, 2);
+cartesian_wrapped_grid!(Wrapped3, 3);
+cartesian_wrapped_grid!(Wrapped4, 4);
+cartesian_wrapped_grid!(Wrapped5, 5);

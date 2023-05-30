@@ -1,6 +1,8 @@
-/// A generic N dimensional cartesian grid, for both finite and wrapped grids
 use super::Grid;
 
+/// A generic N dimensional cartesian grid
+///
+/// The grid has a defined size, outside of which indices aren't defined
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Cartesian<const N: usize>([usize; N]);
 
@@ -31,7 +33,11 @@ impl<const N: usize> Grid<{ 2 * N }, [usize; N]> for Cartesian<N> {
   }
 }
 
-pub struct CartesianWrap<const N: usize>([usize; N]);
+/// A generic N dimensional cartesian wrapped grid
+///
+/// The grid has a defined size, outside of which indices are wrapped around
+/// back around to the opposite edge
+pub struct Wrapped<const N: usize>([usize; N]);
 
 impl<const N: usize> Grid<{ 2 * N }, [usize; N]> for Cartesian<N> {
   fn neighbours(&self, idx: &[usize; N]) -> [Option<[usize; N]>; 2 * N] {

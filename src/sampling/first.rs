@@ -1,5 +1,6 @@
 use crate::Sampler;
 
+/// Takes the first entry from the given collection
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct First;
 

@@ -1,7 +1,11 @@
 use crate::Constraint;
 use std::array;
 
-/// A set of indices that are currently valid for a cell
+/// A generic domain for a given cell, defined over the valid indices
+///
+/// This definition also allows for update rule defined in terms of removing a
+/// tile from a specific side of the domain (the domain has `const N: usize`
+/// sides)
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Domain<const N: usize> {
   num_valid: usize,
@@ -48,6 +52,10 @@ impl<const N: usize> Domain<N> {
 }
 
 impl<const N: usize> Domain<N> {
+  pub fn len(&self) -> usize {
+    self.num_valid
+  }
+
   /// Whether there are no valid items left in the domain
   pub fn is_empty(&self) -> bool {
     self.num_valid == 0

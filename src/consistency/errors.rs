@@ -2,6 +2,8 @@ use std::{collections::TryReserveError, fmt::Display};
 
 use super::super::utility::WorkerBagError;
 
+/// An error created during the process of AC3 constraint propagation
+/// Keeps track of both the domain and item we were attempting to assign
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct AC3Error<Idx> {
   domain: Idx,

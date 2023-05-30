@@ -2,6 +2,17 @@ use crate::Sampler;
 use rand::distributions::WeightedIndex;
 use rand::Rng;
 
+/// Uses each entry to fetch the probability at which it should be returned
+///
+/// For example, with the weights and entries:
+/// ```
+/// let weights = [0.1, 0.2, 0.3, 0.4];
+/// let entries = [3, 1, 0];
+/// ```
+/// will return:
+/// - `3` with probability `0.4`
+/// - `1` with probability `0.2`
+/// - `0` with probability `0.1`
 #[derive(Clone, Debug, Default)]
 pub struct Weighted<'a, R> {
   rng: R,
@@ -28,6 +39,6 @@ impl<'a, R: Rng> Sampler for Weighted<'a, R> {
 
     let weights: Vec<_> = entries.iter().map(|&i| self.weights[i]).collect();
     let dist = WeightedIndex::new(&weights).unwrap();
-    self.rng.sample(dist)
+    entries[self.rng.sample(dist)]
   }
 }

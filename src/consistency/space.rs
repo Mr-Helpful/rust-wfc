@@ -4,6 +4,10 @@ use std::ops::Deref;
 use std::sync::RwLock;
 
 /// An N dimensional space, intended to be used by multiple threads at once
+///
+/// There are 2 locks used in the layout:
+/// - the outer lock, solely used for inserting values into an empty entry
+/// - the inner lock, used for in place modification + reading of values
 #[derive(Debug)]
 pub struct Space<Idx, T>(RwLock<HashMap<Idx, RwLock<T>>>);
 
@@ -59,6 +63,10 @@ impl<Idx: Clone, T> Space<Idx, T> {
       .unwrap()
       .iter()
       .all(|(_, lock)| lock.read().map_or(false, |item| pred(&item)))
+  }
+
+  pub fn keys(&self) -> Vec<Idx> {
+    self.0.read().unwrap().keys().cloned().collect()
   }
 }
 

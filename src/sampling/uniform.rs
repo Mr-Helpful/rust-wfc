@@ -1,6 +1,7 @@
 use crate::Sampler;
 use rand::Rng;
 
+/// Randomly takes any entry in the collection with equal likelihood
 #[derive(Clone, Debug, Default)]
 pub struct Uniform<R: Rng> {
   rng: R,

@@ -1,5 +1,6 @@
 use crate::{Search, State};
 
+/// Generates a single failure/success and then None repeatedly
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Naive<S: State> {
   item: Option<S>,
